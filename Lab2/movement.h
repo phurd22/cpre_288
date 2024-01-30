@@ -1,12 +1,14 @@
-#ifndef HEADER_FILE
+#ifndef MOVEMENT_H
 
-#define HEADER_FILE
+#define MOVEMENT_H
 
 //Function headers and macro definitions
 double move_forward(oi_t*sensor_data, double distance_mm);
 
-double turn_right(oi_t*sensor, double degrees);
+double move_backward(oi_t*sensor_data, double distance_mm);
 
-double turn_left(oi_t*sensor, double degrees)
+void turn_right(oi_t*sensor, double degrees);
+
+void turn_left(oi_t*sensor, double degrees);
 
 #endif
