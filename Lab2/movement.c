@@ -16,7 +16,6 @@ double move_forward(oi_t*sensor_data, double distance_mm){
 
     oi_setWheels(0,0);
     
-
 }
 
 double turn_right(oi_t*sensor, double degrees){
