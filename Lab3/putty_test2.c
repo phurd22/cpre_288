@@ -21,11 +21,11 @@ int main (void) {
 
         int i = 0;
 
-        for(i, i < strlen(message), i++){
-            cyBot_sendByte(message[i])
+        for(i = 0; i < strlen(message); i++){
+            cyBot_sendByte(message[i]);
         }
 
-        cBot_sendByte(character)
+        cyBot_sendByte(character);
     }
 
 	return 0;

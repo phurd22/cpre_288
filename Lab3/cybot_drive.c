@@ -26,10 +26,10 @@ int main (void) {
             move_backward(sensor_data, 250);
         }
         else if (character == 'a'){
-            turn_left(sensor_data, 90);
+            turn_left(sensor_data, 45);
         }
         else if (character == 'd'){
-            turn_right(sensor_data, 90);
+            turn_right(sensor_data, 45);
         }
     }
 
