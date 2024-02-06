@@ -3,10 +3,11 @@
 #include "cyBot_uart.h"
 #include "cyBot_Scan.h"
 #include "string.h"
+#include <stdio.h>
 
 int main (void) {
 
-    cyBOT_Scan_t *getScan;
+    cyBOT_Scan_t getScan;
 
     lcd_init();
 
@@ -15,6 +16,9 @@ int main (void) {
     cyBot_uart_init();
 
     cyBOT_init_Scan(0b0111);
+
+    right_calibration_value =  232750;
+    left_calibration_value = 1225000;
 
     timer_init();
 
@@ -30,20 +34,16 @@ int main (void) {
                cyBot_sendByte(message[i]);
             }
 
-
-            for(i = 45; i < 138; i += 3)
+            for(i = 45; i < 137; i += 2)
             {
-                cyBOT_Scan(i, getScan);
-                char data[10];
-                strcat(data, i);
-                strcat(data, '\t');
-                strcat(data, (char) getScan -> sound_dist);
-                strcat(data, '\r\n');
+                cyBOT_Scan(i, &getScan);
+                char data[80];
+                sprintf(data, "%d\t%f\r\n", i, getScan.sound_dist);
 
-                for(i = 0; i < strlen(data); i++){
-                    cyBot_sendByte(data[i]);
-                 }
-                timer_waitMillis(300);
+                int j = 0;
+                for(j = 0; j < strlen(data); j++){
+                    cyBot_sendByte(data[j]);
+               }
             }
         }
     }
