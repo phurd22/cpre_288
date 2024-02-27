@@ -1,0 +1,41 @@
+GPIO Port E Info
+Start: 0x4002.4000
+End: 0x4002.4FFF
+
+tm4c123gh6pm.h register definitions
+
+//*****************************************************************************
+//
+// GPIO registers (PORTE)
+//
+//*****************************************************************************
+#define GPIO_PORTE_DATA_BITS_R ((volatile unsigned long *)0x40024000)
+#define GPIO_PORTE_DATA_R (*((volatile unsigned long *)0x400243FC))
+#define GPIO_PORTE_DIR_R (*((volatile unsigned long *)0x40024400))
+#define GPIO_PORTE_IS_R (*((volatile unsigned long *)0x40024404))
+#define GPIO_PORTE_IBE_R (*((volatile unsigned long *)0x40024408))
+#define GPIO_PORTE_IEV_R (*((volatile unsigned long *)0x4002440C))
+#define GPIO_PORTE_IM_R (*((volatile unsigned long *)0x40024410))
+#define GPIO_PORTE_RIS_R (*((volatile unsigned long *)0x40024414))
+#define GPIO_PORTE_MIS_R (*((volatile unsigned long *)0x40024418))
+#define GPIO_PORTE_ICR_R (*((volatile unsigned long *)0x4002441C))
+#define GPIO_PORTE_AFSEL_R (*((volatile unsigned long *)0x40024420))
+#define GPIO_PORTE_DR2R_R (*((volatile unsigned long *)0x40024500))
+#define GPIO_PORTE_DR4R_R (*((volatile unsigned long *)0x40024504))
+#define GPIO_PORTE_DR8R_R (*((volatile unsigned long *)0x40024508))
+#define GPIO_PORTE_ODR_R (*((volatile unsigned long *)0x4002450C))
+#define GPIO_PORTE_PUR_R (*((volatile unsigned long *)0x40024510))
+#define GPIO_PORTE_PDR_R (*((volatile unsigned long *)0x40024514))
+#define GPIO_PORTE_SLR_R (*((volatile unsigned long *)0x40024518))
+#define GPIO_PORTE_DEN_R (*((volatile unsigned long *)0x4002451C))
+#define GPIO_PORTE_LOCK_R (*((volatile unsigned long *)0x40024520))
+#define GPIO_PORTE_CR_R (*((volatile unsigned long *)0x40024524))
+#define GPIO_PORTE_AMSEL_R (*((volatile unsigned long *)0x40024528))
+#define GPIO_PORTE_PCTL_R (*((volatile unsigned long *)0x4002452C))
+#define GPIO_PORTE_ADCCTL_R (*((volatile unsigned long *)0x40024530))
+#define GPIO_PORTE_DMACTL_R (*((volatile unsigned long *)0x40024534))
+
+Pin 3: PB_SW4
+Pin 2: PB_SW3
+Pin 1: PB_SW2
+Pin 0: PB_SW1
