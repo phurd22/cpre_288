@@ -11,4 +11,6 @@ void turn_right(oi_t*sensor, double degrees);
 
 void turn_left(oi_t*sensor, double degrees);
 
+double moveBump(oi_t*sensor_data, double distance);
+
 #endif

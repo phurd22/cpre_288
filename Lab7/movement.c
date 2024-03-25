@@ -6,7 +6,7 @@ void turn_right(oi_t*sensor, double degrees){
 
     double sum = 0;
 
-    oi_setWheels(-50, 50);
+    oi_setWheels(-25, 25);
 
     while (sum < degrees-23){
 
@@ -14,7 +14,6 @@ void turn_right(oi_t*sensor, double degrees){
 
         sum += abs(sensor -> angle);
 
-        lcd_printf("Angle: %3.1f", sum);
 
     }
 
@@ -25,14 +24,13 @@ void turn_right(oi_t*sensor, double degrees){
 void turn_left(oi_t*sensor, double degrees){
     double sum = 0;
 
-    oi_setWheels(50, -50);
+    oi_setWheels(25, -25);
 
     while (sum < degrees-23){
         oi_update(sensor);
 
         sum += abs(sensor -> angle);
 
-        lcd_printf("Angle: %3.1f", sum);
 
        }
 
@@ -43,7 +41,7 @@ double move_forward(oi_t*sensor_data, double distance_mm){
 
     double sum = 0;
 
-    oi_setWheels(250, 250);
+    oi_setWheels(150, 150);
 
         while (sum < distance_mm) {
 
@@ -56,7 +54,6 @@ double move_forward(oi_t*sensor_data, double distance_mm){
 
             sum += sensor_data -> distance;
 
-            lcd_printf("Forwards: %5.1f mm", sum);
         }
 
     oi_setWheels(0,0);
@@ -67,19 +64,46 @@ double move_backward(oi_t*sensor_data, double distance_mm){
 
     double sum = 0;
 
-    oi_setWheels(-250,-250);
+    oi_setWheels(-150,-150);
 
     while (sum < distance_mm) {
         oi_update(sensor_data);
 
         sum += abs(sensor_data -> distance);
 
-        lcd_printf("Backwards: %5.1f mm", sum);
     }
 
     oi_setWheels(0,0);
     return sum;
 }
 
+double moveBump(oi_t*sensor_data, double distance){
+
+    double totalDist = 0;
+
+    totalDist += move_forward(sensor_data, distance);
+
+    while (totalDist < distance){
+
+        double diff = distance - totalDist;
+
+        if (sensor_data->bumpLeft) {
+            totalDist -= move_backward(sensor_data, 200);
+            turn_right(sensor_data, 45);
+            totalDist += moveBump(sensor_data, 100);
+            turn_left(sensor_data, 45);
+
+        } else if (sensor_data->bumpRight){
+            totalDist -= move_backward(sensor_data, 200);
+            turn_left(sensor_data, 45);
+            totalDist += moveBump(sensor_data, 100);
+            turn_right(sensor_data, 45);
+        }
+
+        totalDist += moveBump(sensor_data, diff);
+    }
+    return totalDist;
+
+}
 
 

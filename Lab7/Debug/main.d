@@ -21,12 +21,12 @@ main.obj: C:/ti/ccs1230/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdarg.
 main.obj: C:/ti/ccs1230/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/string.h
 main.obj: C:/ti/ccs1230/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/xlocale/_string.h
 main.obj: ../uart-interrupt.h
-main.obj: ../cyBot_Scan.h
 main.obj: ../open_interface.h
 main.obj: C:/ti/ccs1230/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdlib.h
 main.obj: C:/ti/ccs1230/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/math.h
 main.obj: C:/ti/ccs1230/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_defs.h
 main.obj: C:/ti/ccs1230/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_limits.h
+main.obj: ../cyBot_Scan.h
 main.obj: ../movement.h
 
 ../main.c:
@@ -71,8 +71,6 @@ C:/ti/ccs1230/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/xlocale/_string.h
 
 ../uart-interrupt.h:
 
-../cyBot_Scan.h:
-
 ../open_interface.h:
 
 C:/ti/ccs1230/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdlib.h:
@@ -82,6 +80,8 @@ C:/ti/ccs1230/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/math.h:
 C:/ti/ccs1230/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/_defs.h:
 
 C:/ti/ccs1230/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_limits.h:
+
+../cyBot_Scan.h:
 
 ../movement.h:
 
