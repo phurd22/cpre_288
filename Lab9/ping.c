@@ -24,10 +24,12 @@ void ping_init (void){
     GPIO_PORTB_PCTL_R |= 0x00007000;     // Force 1's in the desired locations
 
 
-   SYSCTL_RCGCTIMER_R |= SYSCTL_RCGCTIMER_R3; // Turn on clock to TIMER3
-   TIMER3_CTL_R &= ~TIMER_CTL_TBEN;           // Disable TIMER3 for setup
-   TIMER3_CFG_R = TIMER_CFG_16_BIT;           // Set as 16-bit timer
-   TIMER3_TBMR_R = TIMER_TBMR_TBMR_PERIOD;    // Periodic, countdown mode
+    SYSCTL_RCGCTIMER_R |= 0x0008; // Turn on clock to TIMER3
+    TIMER3_CTL_R &= ~0x0100;           // Disable TIMER3 for setup
+    TIMER3_CFG_R = 0x0004;           // Set as 16-bit timer
+    TIMER3_TBMR_R = 0x0007;
+
+  //code that still needs changed below
    TIMER3_TBILR_R = MICROS_PER_TICK - 1;      // Countdown time of 65ms
    TIMER3_ICR_R |= TIMER_ICR_TBTOCINT; // Clear timeout interrupt status
    TIMER3_TBPR_R = 0x0F;               // 15 gives a period of 1us
