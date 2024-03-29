@@ -19,14 +19,17 @@ int main(void) {
  	ping_init();
 
 	// YOUR CODE HERE
-	ping_trigger();
+	//ping_trigger();
 
-	//while(1)
-	//{
+	while(1)
+	{
 
       // YOUR CODE HERE
 
-
-	//}
+	    float dist = 0;
+	    dist = ping_getDistance();
+	    lcd_printf("%.2f, OF: %d", dist, overflow);
+	    timer_waitMicros(500000);
+	}
 
 }

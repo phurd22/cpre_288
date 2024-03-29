@@ -5,6 +5,7 @@
  */
 #ifndef PING_H_
 #define PING_H_
+extern int overflow;
 
 #include <stdint.h>
 #include <stdbool.h>
