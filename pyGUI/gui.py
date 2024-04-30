@@ -34,13 +34,26 @@ class WidgetGallery(QDialog):
 
         self.backend = Backend()
 
+        self.setWindowTitle("Plankton Bot 3000")
+
         topGroupBox = self.createTopGroupBox()
         moveGroupBox = self.createMoveGroupBox()
         turnGroupBox = self.createTurnGroupBox()
+        bottomGroupBox = self.createBottomGroupBox()
         dataTab = self.createDataTabWidget()
 
-        self.log = QTextBrowser()
-        self.log.setPlainText("Command Log\n>> ")
+        self.sens = {
+            'bumpLeft': self.bumpLeft,
+            'bumpRight': self.bumpRight,
+            'cliffLeft': self.cliffLeft,
+            'cliffRight': self.cliffRight,
+            'cliffFrontLeft': self.cliffFrontLeft,
+            'cliffFrontRight': self.cliffFrontRight,
+            'cliffLeftSignal': self.cliffLeftSignal,
+            'cliffRightSignal': self.cliffRightSignal,
+            'cliffFrontLeftSignal': self.cliffFrontLeftSignal,
+            'cliffFrontRightSignal': self.cliffFrontRightSignal
+        }
 
         self.buttonWindow = QWidget()
         secondLayout = QVBoxLayout()
@@ -57,7 +70,7 @@ class WidgetGallery(QDialog):
 
         mainLayout = QVBoxLayout()
         mainLayout.addWidget(self.firstWindow)
-        mainLayout.addWidget(self.log)
+        mainLayout.addWidget(bottomGroupBox)
        
         self.setLayout(mainLayout)
 
@@ -101,11 +114,19 @@ class WidgetGallery(QDialog):
         textLayout.addWidget(self.connectionStatusText)
         self.connectionStatus.setLayout(textLayout)
 
+        scanButton = QWidget()
+        scanButtonsLayout = QHBoxLayout()
 
-        scanButton = QPushButton("Scan")
-        scanButton.setDefault(True)
+        scanButtonIR = QPushButton("Scan")
+        scanButtonIR.setDefault(True)
+        scanButtonIR.clicked.connect(self.sendScanIR)
+        song = QPushButton("Play Song")
+        song.setDefault(True)
+        song.clicked.connect(self.sendSong)
 
-        scanButton.clicked.connect(self.sendScan)
+        scanButtonsLayout.addWidget(scanButtonIR)
+        scanButtonsLayout.addWidget(song)
+        scanButton.setLayout(scanButtonsLayout)
 
         inner = QWidget()
 
@@ -134,14 +155,15 @@ class WidgetGallery(QDialog):
         self.moveDistanceValue = QSpinBox()
         self.moveDistanceValue.setPrefix("Distance: ")
         self.moveDistanceValue.setSingleStep(10)
-        self.moveDistanceValue.setMaximum(999)
-        self.moveDistanceValue.setValue(500)
+        self.moveDistanceValue.setMaximum(2000)
+        self.moveDistanceValue.setValue(250)
 
         self.moveSpeedValue = QSpinBox()
         self.moveSpeedValue.setPrefix("Speed: ")
-        self.moveSpeedValue.setSingleStep(10)
-        self.moveSpeedValue.setMaximum(500)
-        self.moveSpeedValue.setValue(250)
+        self.moveSpeedValue.setSingleStep(50)
+        self.moveSpeedValue.setMinimum(50)
+        self.moveSpeedValue.setMaximum(350)
+        self.moveSpeedValue.setValue(150)
 
         moveButton = QPushButton("Move")
         moveButton.setDefault(True)
@@ -168,13 +190,14 @@ class WidgetGallery(QDialog):
         self.turnDegreeValue = QSpinBox()
         self.turnDegreeValue.setPrefix("Degrees: ")
         self.turnDegreeValue.setMaximum(180)
-        self.turnDegreeValue.setValue(90)
+        self.turnDegreeValue.setValue(45)
 
         self.turnSpeedValue = QSpinBox()
         self.turnSpeedValue.setPrefix("Speed: ")
-        self.turnSpeedValue.setSingleStep(10)
-        self.turnSpeedValue.setMaximum(500)
-        self.turnSpeedValue.setValue(250)
+        self.turnSpeedValue.setSingleStep(50)
+        self.turnSpeedValue.setMinimum(50)
+        self.turnSpeedValue.setMaximum(350)
+        self.turnSpeedValue.setValue(50)
 
         turnButton = QPushButton("Turn")
         turnButton.setDefault(True)
@@ -190,6 +213,143 @@ class WidgetGallery(QDialog):
         turnGroupBox.setLayout(layout)
 
         return turnGroupBox
+    
+    def createBottomGroupBox(self):
+        bottomGroupBox = QWidget()
+        sensorStatus = QWidget()
+
+        bump = QWidget()
+        bumpLayout = QVBoxLayout()
+
+        self.bumpLeft = QWidget()
+        bumpLeftLabel = QLabel("Bump Left")
+        bumpLeftLabel.setAlignment(Qt.AlignCenter)
+        self.bumpLeft.setStyleSheet("background-color:green;")
+        textLayout = QHBoxLayout()
+        textLayout.addWidget(bumpLeftLabel)
+        self.bumpLeft.setLayout(textLayout)
+
+        self.bumpRight = QWidget()
+        bumpRightLabel = QLabel("Bump Right")
+        bumpRightLabel.setAlignment(Qt.AlignCenter)
+        self.bumpRight.setStyleSheet("background-color:green;")
+        textLayout = QHBoxLayout()
+        textLayout.addWidget(bumpRightLabel)
+        self.bumpRight.setLayout(textLayout)
+
+        bumpLayout.addWidget(self.bumpLeft)
+        bumpLayout.addWidget(self.bumpRight)
+        bump.setLayout(bumpLayout)
+
+        cliff = QWidget()
+        cliffLayout = QVBoxLayout()
+
+        self.cliffLeft = QWidget()
+        cliffLeftLabel = QLabel("Cliff Left")
+        cliffLeftLabel.setAlignment(Qt.AlignCenter)
+        self.cliffLeft.setStyleSheet("background-color:green;")
+        textLayout = QHBoxLayout()
+        textLayout.addWidget(cliffLeftLabel)
+        self.cliffLeft.setLayout(textLayout)
+
+        self.cliffRight = QWidget()
+        cliffRightLabel = QLabel("Cliff Right")
+        cliffRightLabel.setAlignment(Qt.AlignCenter)
+        self.cliffRight.setStyleSheet("background-color:green;")
+        textLayout = QHBoxLayout()
+        textLayout.addWidget(cliffRightLabel)
+        self.cliffRight.setLayout(textLayout)
+
+        cliffLayout.addWidget(self.cliffLeft)
+        cliffLayout.addWidget(self.cliffRight)
+        cliff.setLayout(cliffLayout)
+
+        cliffFront = QWidget()
+        cliffFrontLayout = QVBoxLayout()
+
+        self.cliffFrontLeft = QWidget()
+        cliffFrontLeftLabel = QLabel("Cliff Front Left")
+        cliffFrontLeftLabel.setAlignment(Qt.AlignCenter)
+        self.cliffFrontLeft.setStyleSheet("background-color:green;")
+        textLayout = QHBoxLayout()
+        textLayout.addWidget(cliffFrontLeftLabel)
+        self.cliffFrontLeft.setLayout(textLayout)
+
+        self.cliffFrontRight = QWidget()
+        cliffFrontRightLabel = QLabel("Cliff Front Right")
+        cliffFrontRightLabel.setAlignment(Qt.AlignCenter)
+        self.cliffFrontRight.setStyleSheet("background-color:green;")
+        textLayout = QHBoxLayout()
+        textLayout.addWidget(cliffFrontRightLabel)
+        self.cliffFrontRight.setLayout(textLayout)
+
+        cliffFrontLayout.addWidget(self.cliffFrontLeft)
+        cliffFrontLayout.addWidget(self.cliffFrontRight)
+        cliffFront.setLayout(cliffFrontLayout)
+
+        cliffSig = QWidget()
+        cliffSigLayout = QVBoxLayout()
+
+        self.cliffLeftSignal = QWidget()
+        cliffLeftSignalLabel = QLabel("Cliff Left Signal")
+        cliffLeftSignalLabel.setAlignment(Qt.AlignCenter)
+        self.cliffLeftSignal.setStyleSheet("background-color:green;")
+        textLayout = QHBoxLayout()
+        textLayout.addWidget(cliffLeftSignalLabel)
+        self.cliffLeftSignal.setLayout(textLayout)
+
+        self.cliffRightSignal = QWidget()
+        cliffRightSignalLabel = QLabel("Cliff Right Signal")
+        cliffRightSignalLabel.setAlignment(Qt.AlignCenter)
+        self.cliffRightSignal.setStyleSheet("background-color:green;")
+        textLayout = QHBoxLayout()
+        textLayout.addWidget(cliffRightSignalLabel)
+        self.cliffRightSignal.setLayout(textLayout)
+
+        cliffSigLayout.addWidget(self.cliffLeftSignal)
+        cliffSigLayout.addWidget(self.cliffRightSignal)
+        cliffSig.setLayout(cliffSigLayout)
+
+        cliffFrontSig = QWidget()
+        cliffFrontSigLayout = QVBoxLayout()
+
+        self.cliffFrontLeftSignal = QWidget()
+        cliffFrontLeftSignalLabel = QLabel("Cliff Front Left Signal")
+        cliffFrontLeftSignalLabel.setAlignment(Qt.AlignCenter)
+        self.cliffFrontLeftSignal.setStyleSheet("background-color:green;")
+        textLayout = QHBoxLayout()
+        textLayout.addWidget(cliffFrontLeftSignalLabel)
+        self.cliffFrontLeftSignal.setLayout(textLayout)
+
+        self.cliffFrontRightSignal = QWidget()
+        cliffFrontRightSignalLabel = QLabel("Cliff Front Right Signal")
+        cliffFrontRightSignalLabel.setAlignment(Qt.AlignCenter)
+        self.cliffFrontRightSignal.setStyleSheet("background-color:green;")
+        textLayout = QHBoxLayout()
+        textLayout.addWidget(cliffFrontRightSignalLabel)
+        self.cliffFrontRightSignal.setLayout(textLayout)
+
+        cliffFrontSigLayout.addWidget(self.cliffFrontLeftSignal)
+        cliffFrontSigLayout.addWidget(self.cliffFrontRightSignal)
+        cliffFrontSig.setLayout(cliffFrontSigLayout)
+
+        secondLayout = QHBoxLayout()
+        secondLayout.addWidget(bump)
+        secondLayout.addWidget(cliff)
+        secondLayout.addWidget(cliffFront)
+        secondLayout.addWidget(cliffSig)
+        secondLayout.addWidget(cliffFrontSig)
+        sensorStatus.setLayout(secondLayout)
+
+        self.log = QTextBrowser()
+        self.log.setPlainText("Command Log\n>> ")
+
+        mainLayout = QVBoxLayout()
+        mainLayout.addWidget(sensorStatus)
+        mainLayout.addWidget(self.log)
+        bottomGroupBox.setLayout(mainLayout)
+
+        return bottomGroupBox
 
     def createDataTabWidget(self):
         dataTab = QTabWidget()
@@ -207,22 +367,28 @@ class WidgetGallery(QDialog):
         self.graph = QImage("Polar Plot")
 
         tab3 = QWidget()
-
         self.gs = QImage("Raw Grayscale")
-        self.ed = QImage("Edge Detection Result")
-        self.contrast = QImage("Enhanced Contrast")
-        self.filtered = QImage("Filtered")
-
-        layout = QGridLayout()
-        layout.addWidget(self.gs, 0, 0)
-        layout.addWidget(self.ed, 0, 1)
-        layout.addWidget(self.contrast, 1, 0)
-        layout.addWidget(self.filtered, 1, 1)
+        self.filtered = QImage("Object Highlight")
+        layout = QHBoxLayout()
+        layout.addWidget(self.gs)
+        layout.addWidget(self.filtered)
         tab3.setLayout(layout)
+
+        tab4 = QWidget()
+        self.map = QImage("Map")
+        resetMap = QPushButton("Reset Map")
+        resetMap.setDefault(True)
+        resetMap.clicked.connect(self.resetMap)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.map)
+        layout.addWidget(resetMap)
+        tab4.setLayout(layout)
 
         dataTab.addTab(tab1, "Raw")
         dataTab.addTab(self.graph, "Polar")
         dataTab.addTab(tab3, "Greyscale")
+        dataTab.addTab(tab4, "Map")
 
         return dataTab
     
@@ -230,14 +396,17 @@ class WidgetGallery(QDialog):
     def sendCommand(self, cmd):
         ret = True
 
-        self.firstWindow.setDisabled(True)
+        self.setDisabled(True)
 
         error = self.backend.processCommand(cmd)
         if (error < 0):
             ret = False
         self.log.setPlainText(self.log.toPlainText() + cmd + '\n\n' + self.backend.log_message + '\n\n>> ')
         
-        self.firstWindow.setEnabled(True)
+        self.updateSensorStatus()
+
+        self.setEnabled(True)
+        self.map.updateImage('images/map.png')
 
         return ret
 
@@ -249,12 +418,16 @@ class WidgetGallery(QDialog):
             self.connectionStatusText.setText("CONNECTED")
             self.connectionStatus.setStyleSheet("background-color:green;")
 
-    def sendScan(self):
+    def sendSong(self):
+        self.sendCommand("song")
+
+    def sendScanIR(self):
         self.sendCommand("scan")
         self.backend.readData('scan_results.txt')
         self.updateDataTable()
         paths = self.backend.createGraphics()
         self.updateImages(paths)
+        self.map.updateImage('images/map.png')
 
     def sendMove(self):
         cmd = ''
@@ -287,18 +460,34 @@ class WidgetGallery(QDialog):
             for j, col in enumerate(row):
                 item = QTableWidgetItem(str(col))
                 self.dataTableWidget.setItem(i+1, j, item)
+        
 
     def updateImages(self, paths):
         self.graph.updateImage(paths['GRAPH'])
         self.gs.updateImage(paths['GS'])
-        self.ed.updateImage(paths['ED'])
-        self.contrast.updateImage(paths['CONTRAST'])
         self.filtered.updateImage(paths['FILTERED'])
+
+    def updateSensorStatus(self):
+        sens = self.backend.sens
+        for i, sen in enumerate(sens):
+            if sens[sen] == 1:
+                self.sens[sen].setStyleSheet("background-color:red;")
+            else:
+                self.sens[sen].setStyleSheet("background-color:green;")
+
+    def resetMap(self):
+        self.backend.resetMap()
+        self.map.updateImage('images/map.png')
+
 
 
 if __name__ == '__main__':
     app = QApplication([])
     app.setWindowIcon(QIcon('images/icon.png'))
+    app.setStyleSheet("QDialog { background-image: url(images/background.jpg) }"
+                      "QLineEdit { background: transparent }"
+                      "QSpinBox { background: transparent }"
+                      "QTextBrowser { background: transparent }")
     gallery = WidgetGallery()
     gallery.show()
     sys.exit(app.exec())

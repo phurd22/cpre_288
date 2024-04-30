@@ -98,7 +98,7 @@ class Graphics():
 
         # Set pixel intensities in the column
         image = pixel_intensities * np.ones((len(pixel_intensities),1))
-        return image
+        return np.flip(image)
     
     def edge_detection(self, input_image_data):
        

@@ -3,7 +3,7 @@ import time # Time library
 # See: Background, Socket API Overview, and TCP Sockets  
 import socket
 
-TIMEOUT = 10
+TIMEOUT = 100
 
 class BotConnection():
     def __init__(self, host=None, port=None):
@@ -33,13 +33,14 @@ class BotConnection():
             time.sleep(2) # Sleep for 2 seconds
             self.bot.close()         # Close file object associated with the socket or UART
     
-    def writeToBot(self, message):
+    def writeToBot(self, b):
         log_message = ''
+        self.bot.write(b)
         try:
-            self.bot.write(str(message).encode())
-            log_message += 'Command sent successfully'
+            pass
+            #self.bot.write(b)
         except:
-            log_message += 'Invalid message, please try again'
+            log_message += 'Error sending byte to bot'
             return log_message, -1
         return log_message, 0
     
@@ -49,34 +50,29 @@ class BotConnection():
             raw = self.bot.readline()
             message = raw.decode()
         except:
-             print('Error occured while reading from bot, please try again')
-
-             return 'error', -1
+            return 'Error occured while reading from bot, please try again', -1
         
         return message, 0
     
-    def requestScan(self, filename):
+    def getScanData(self, filename):
+        log_message = ''
+        error = 0
+        rx_message = bytearray(1) # Initialize a byte array
 
-        log_message, error = self.writeToBot('scan')
+        # Create or overwrite existing sensor scan data file
+        file_object = open(filename,'w') # Open the file: file_object is just a variable for the file "handler" returned by open()
+        while (rx_message.decode() != "END\n"): # Collect sensor data until "END" recieved
+            try:
+                rx_message = self.bot.readline()   # Wait for sensor response, readline expects message to end with "\n"
+                file_object.write(rx_message.decode())  # Write a line of sensor data to the file
+            except TimeoutError:
+                log_message = "Scan request timed out, please try again"
+                error = -1
+                break
 
-        if error >= 0:
-            rx_message = bytearray(1) # Initialize a byte array
+        file_object.close() # Important to close file once you are done with it!!
 
-            # Create or overwrite existing sensor scan data file
-            file_object = open(filename,'w') # Open the file: file_object is just a variable for the file "handler" returned by open()
-            while (rx_message.decode() != "END\n"): # Collect sensor data until "END" recieved
-                try:
-                    rx_message = self.bot.readline()   # Wait for sensor response, readline expects message to end with "\n"
-                    file_object.write(rx_message.decode())  # Write a line of sensor data to the file
-                except TimeoutError:
-                    log_message = "Scan request timed out, please try again"
-                    error = -1
-                    break
-
-            file_object.close() # Important to close file once you are done with it!! 
- 
-        
-        return log_message, error
+        return log_message, error 
     
     def __del__(self):
         self.disconnectFromBot()
@@ -95,7 +91,7 @@ if __name__ == '__main__':
 
     send_message = "Connected\n"
 
-    error = cxn.writeToBot(send_message)
+    msg, error = cxn.writeToBot(send_message)
 
     if error < 0:
         exit(error)
